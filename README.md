@@ -1,1 +1,1 @@
-# Super-Mário-rio-clone-MIS
+# SuperMario-clone-MIS
