@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class playerMovement : MonoBehaviour
 {
+    public SpriteRenderer sprite;
     public Rigidbody2D rig;
     public Animator anim;
     public float speed;
@@ -11,28 +12,40 @@ public class playerMovement : MonoBehaviour
 
     private Vector2 direction;
 
-    // Update is called once per frame
     void Update()
     {
-        // read input in Update     
-        float vy;
-        if (rig != null)
-            vy = rig.linearVelocity.y;
-        else
-            vy = 0f;
-        direction = new Vector2(Input.GetAxisRaw("Horizontal") * speed, vy);
+        
+        direction = new Vector2(Input.GetAxisRaw("Horizontal") * speed, rig.linearVelocity.y);
+
+        if(Input.GetAxisRaw("Horizontal") < 0)
+        {
+            sprite.flipX = true;
+        }
+
+        if (Input.GetAxisRaw("Horizontal") > 0)
+        {
+            sprite.flipX = false;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            rig.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
     }
 
     private void FixedUpdate()
     {
-        // apply velocity in FixedUpdate
-        if (rig != null)
             rig.linearVelocity = direction;
+
+        if(direction.sqrMagnitude > 0)
+        {
+            anim.Play("playerRun");
+        }
+        else
+        {
+            anim.Play("playerIdle");
+        }
     }
 
-    private void Awake()
-    {
-        if (rig == null)
-            rig = GetComponent<Rigidbody2D>();
-    }
+   
 }
